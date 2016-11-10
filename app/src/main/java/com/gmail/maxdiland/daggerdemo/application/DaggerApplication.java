@@ -2,13 +2,12 @@ package com.gmail.maxdiland.daggerdemo.application;
 
 import android.app.Application;
 
-import com.gmail.maxdiland.daggerdemo.permission.PermissionManager;
-import com.gmail.maxdiland.daggerdemo.rest.RestClient;
-import com.google.gson.Gson;
+import com.gmail.maxdiland.daggerdemo.di.component.ApplicationComponent;
+import com.gmail.maxdiland.daggerdemo.di.component.DaggerApplicationComponent;
+import com.gmail.maxdiland.daggerdemo.di.module.ApplicationModule;
 
 public class DaggerApplication extends Application {
-    private RestClient restClient;
-    private PermissionManager permissionManager;
+    private ApplicationComponent applicationComponent;
 
     @Override
     public void onCreate() {
@@ -17,16 +16,12 @@ public class DaggerApplication extends Application {
     }
 
     private void initDependencies() {
-        restClient = new RestClient();
-        restClient.setGson(new Gson());
-        permissionManager = new PermissionManager();
+        this.applicationComponent =
+                DaggerApplicationComponent.builder().
+                        applicationModule(new ApplicationModule()).build();
     }
 
-    public RestClient getRestClient() {
-        return restClient;
-    }
-
-    public PermissionManager getPermissionManager() {
-        return permissionManager;
+    public ApplicationComponent getApplicationComponent() {
+        return applicationComponent;
     }
 }

@@ -4,21 +4,23 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.gmail.maxdiland.daggerdemo.R;
 import com.gmail.maxdiland.daggerdemo.application.DaggerApplication;
+import com.gmail.maxdiland.daggerdemo.di.module.ActivityModule;
 import com.gmail.maxdiland.daggerdemo.location.LocationManager;
 import com.gmail.maxdiland.daggerdemo.permission.PermissionManager;
 import com.gmail.maxdiland.daggerdemo.rest.RestClient;
 import com.gmail.maxdiland.daggerdemo.rest.dto.Response;
 
+import javax.inject.Inject;
+
 public class OneActivity extends AppCompatActivity {
 
-    private RestClient restClient;
-    private LocationManager locationManager;
-    private PermissionManager permissionManager;
+    @Inject RestClient restClient;
+    @Inject LocationManager locationManager;
+    @Inject PermissionManager permissionManager;
 
     private TextView tvInfo;
     private TextView tvLocationInfo;
@@ -32,10 +34,8 @@ public class OneActivity extends AppCompatActivity {
     }
 
     private void initDependencies() {
-        DaggerApplication application = (DaggerApplication) getApplication();
-        restClient = application.getRestClient();
-        permissionManager = application.getPermissionManager();
-        locationManager = new LocationManager(permissionManager);
+        ((DaggerApplication) getApplication()).getApplicationComponent().plus(new ActivityModule())
+                .inject(this);
     }
 
     private void initViews() {
